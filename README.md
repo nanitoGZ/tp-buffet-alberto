@@ -1,16 +1,16 @@
 # TP Integrador — Buffet Albert Einstein
 
-Trabajo Práctico grupal de **Algoritmos y Estructuras de Datos** (UTN FRBA) —
-unidad de **archivos binarios en C/C++**.
+Trabajo Práctico grupal de **Algoritmos y Estructuras de Datos** (UTN FRBA) — unidad de **archivos binarios en C/C++**.
 
-> **Grupo:** _(21)_
-> **Integrantes:** _(Ignacio Tomas Gonzalez — nanitoGZ)_
+> **Grupo:** 21  
+> **Integrantes:** Ignacio Tomas Gonzalez — nanitoGZ (Trabajo individual)
 
 ---
 
-## Compilación y Ejecución 
+## Compilación y Ejecución
 
 Compilar cada programa por separado con `g++`:
+
 ```bash
 g++ -O2 -o normalizacion normalizacion.cpp
 g++ -O2 -o ventas        ventas.cpp
@@ -24,8 +24,7 @@ cp datos/comandas_historicas.dat datos/inventario.dat .
 ./ventas            # Carga interactiva diaria
 ./cierre            # Consolidación semanal
 ./resumen           # Reporte final por pantalla
-```
-## Explicación de los programas:
+Explicación de los programas
 normalizacion.cpp
 Este módulo organiza y adapta los datos del sistema anterior. Lee el archivo comandas_historicas.dat para identificar a todos los mozos sin repetirlos y crear el archivo mozos.dat, asignándoles a cada uno un número de ID correlativo a partir de 1 (1, 2, 3...) y sumando la comisión que ya traían acumulada. A su vez, genera para cada mozo una contraseña inicial con su propio número de ID y la guarda encriptada sumándole 5 a cada carácter (cifrado César). Al mismo tiempo, actualiza las unidades en inventario.dat descontando las ventas históricas mediante una búsqueda rápida aprovechando que los productos ya están ordenados por código. Luego, en una segunda pasada, reparte cada venta histórica en su archivo diario correspondiente (comandas_dd-mm-aaaa.dat) y deja cada una de esas planillas diarias ordenadas por ID de mozo.
 
