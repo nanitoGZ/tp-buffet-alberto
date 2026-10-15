@@ -8,7 +8,7 @@ unidad de **archivos binarios en C/C++**.
 
 ---
 
-## Compilación y Ejecución
+## Compilación y Ejecución 
 
 Compilar cada programa por separado con `g++`:
 ```bash
@@ -17,7 +17,7 @@ g++ -O2 -o ventas        ventas.cpp
 g++ -O2 -o cierre        cierre.cpp
 g++ -O2 -o resumen       resumen.cpp
 Orden de ejecución:
-
+```
 Bash
 cp datos/comandas_historicas.dat datos/inventario.dat .
 ./normalizacion     # Se ejecuta solo la primera vez
