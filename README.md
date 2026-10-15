@@ -13,13 +13,13 @@ g++ -O2 -o cierre cierre.cpp
 g++ -O2 -o resumen resumen.cpp
 ```
 Orden de ejecución:
-
+```bash
 cp datos/comandas_historicas.dat datos/inventario.dat .
 ./normalizacion
 ./ventas
 ./cierre
 ./resumen
-
+```
 ## Explicación de los programas
 
 ### normalizacion.cpp
