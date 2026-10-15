@@ -6,12 +6,12 @@
 ## Compilación y Ejecución
 
 Compilar cada programa por separado con g++:
-
+```bash
 g++ -O2 -o normalizacion normalizacion.cpp
 g++ -O2 -o ventas ventas.cpp
 g++ -O2 -o cierre cierre.cpp
 g++ -O2 -o resumen resumen.cpp
-
+```
 Orden de ejecución:
 
 cp datos/comandas_historicas.dat datos/inventario.dat .
