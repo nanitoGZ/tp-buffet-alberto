@@ -11,40 +11,11 @@ struct Comanda {
     float comision;
 };
 
-void ordenarPlanilla(const char* nombreArchivo) {
-    FILE* f = fopen(nombreArchivo, "rb");
-    if (!f) return;
-
-    fseek(f, 0, SEEK_END);
-    long cant = ftell(f) / sizeof(Comanda);
-    fseek(f, 0, SEEK_SET);
-
-    if (cant <= 1) {
-        fclose(f);
-        return;
-    }
-
-    Comanda* arr = new Comanda[cant];
-    fread(arr, sizeof(Comanda), cant, f);
-    fclose(f);
-
-    for (int i = 0; i < cant - 1; i++) {
-        for (int j = 0; j < cant - i - 1; j++) {
-            if (arr[j].idMozo > arr[j + 1].idMozo) {
-                Comanda aux = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = aux;
-            }
-        }
-    }
-
-    f = fopen(nombreArchivo, "wb");
-    if (f) {
-        fwrite(arr, sizeof(Comanda), cant, f);
-        fclose(f);
-    }
-    delete[] arr;
-}
+struct ArchivoApareo {
+    FILE* f;
+    Comanda actual;
+    bool fin;
+};
 
 int main() {
     char idSemana[20];
@@ -60,11 +31,14 @@ int main() {
         return 1;
     }
 
+    ArchivoApareo fuentes[7];
+    int cantDias = 0;
+
     char fecha[15];
     cout << "Ingrese fecha a incluir (DD-MM-AAAA) o FIN para terminar: ";
     cin >> fecha;
 
-    while (strcmp(fecha, "FIN") != 0 && strcmp(fecha, "fin") != 0) {
+    while (strcmp(fecha, "FIN") != 0 && strcmp(fecha, "fin") != 0 && cantDias < 7) {
         char nombreDia[64];
         sprintf(nombreDia, "comandas_%s.dat", fecha);
 
@@ -72,23 +46,53 @@ int main() {
         if (!fDia) {
             cout << "Planilla no encontrada: " << nombreDia << endl;
         } else {
-            Comanda c;
-            int count = 0;
-            while (fread(&c, sizeof(Comanda), 1, fDia) == 1) {
-                fwrite(&c, sizeof(Comanda), 1, fSemana);
-                count++;
+            fuentes[cantDias].f = fDia;
+            if (fread(&fuentes[cantDias].actual, sizeof(Comanda), 1, fDia) == 1) {
+                fuentes[cantDias].fin = false;
+            } else {
+                fuentes[cantDias].fin = true;
             }
-            fclose(fDia);
-            cout << "Se agregaron " << count << " comandas de " << nombreDia << endl;
+            cantDias++;
+            cout << "Planilla agregada al apareo: " << nombreDia << endl;
         }
 
         cout << "Ingrese fecha a incluir (DD-MM-AAAA) o FIN para terminar: ";
         cin >> fecha;
     }
 
-    fclose(fSemana);
-    ordenarPlanilla(nombreSemana);
+    if (cantDias == 0) {
+        cout << "No se ingresaron planillas validas.\n";
+        fclose(fSemana);
+        return 0;
+    }
 
-    cout << "Semana unificada en " << nombreSemana << " ordenada por mozo.\n";
+    while (true) {
+        int indiceMenor = -1;
+
+        for (int i = 0; i < cantDias; i++) {
+            if (!fuentes[i].fin) {
+                if (indiceMenor == -1 || fuentes[i].actual.idMozo < fuentes[indiceMenor].actual.idMozo) {
+                    indiceMenor = i;
+                }
+            }
+        }
+
+        if (indiceMenor == -1) {
+            break;
+        }
+
+        fwrite(&fuentes[indiceMenor].actual, sizeof(Comanda), 1, fSemana);
+
+        if (fread(&fuentes[indiceMenor].actual, sizeof(Comanda), 1, fuentes[indiceMenor].f) != 1) {
+            fuentes[indiceMenor].fin = true;
+        }
+    }
+
+    for (int i = 0; i < cantDias; i++) {
+        fclose(fuentes[i].f);
+    }
+    fclose(fSemana);
+
+    cout << "Semana unificada exitosamente mediante apareo en " << nombreSemana << ".\n";
     return 0;
 }
