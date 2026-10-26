@@ -35,6 +35,29 @@ struct Comanda {
 
 const int K = 5;
 
+void enteroATexto(int num, char* buffer) {
+    if (num == 0) {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return;
+    }
+
+    char temp[20];
+    int len = 0;
+
+    while (num > 0) {
+        int digito = num % 10;
+        temp[len] = (char)(digito + '0');
+        len++;
+        num /= 10;
+    }
+
+    for (int i = 0; i < len; i++) {
+        buffer[i] = temp[len - 1 - i];
+    }
+    buffer[len] = '\0';
+}
+
 void encriptar(const char* origen, char* destino) {
     int i = 0;
     while (origen[i] != '\0' && i < 19) {
@@ -126,7 +149,6 @@ int main() {
 
     ComandaHistorica ch;
 
-    // Pasada 1: armar lista de mozos y actualizar inventario
     while (fread(&ch, sizeof(ComandaHistorica), 1, fHist) == 1) {
         int pos = -1;
         for (int i = 0; i < cantMozos; i++) {
@@ -142,7 +164,7 @@ int main() {
             mozos[cantMozos].totalComision = ch.comision;
 
             char clavePlana[20];
-            sprintf(clavePlana, "%d", cantMozos + 1);
+            enteroATexto(cantMozos + 1, clavePlana);
             encriptar(clavePlana, mozos[cantMozos].password);
 
             cantMozos++;
@@ -153,7 +175,6 @@ int main() {
         descontarStock(ch.codigoProducto, ch.cantidad);
     }
 
-    // Guardar mozos.dat
     FILE* fMozos = fopen("mozos.dat", "wb");
     if (fMozos) {
         for (int i = 0; i < cantMozos; i++) {
@@ -162,7 +183,6 @@ int main() {
         fclose(fMozos);
     }
 
-    // Pasada 2: repartir ventas en las planillas por día
     fseek(fHist, 0, SEEK_SET);
 
     while (fread(&ch, sizeof(ComandaHistorica), 1, fHist) == 1) {
@@ -203,7 +223,6 @@ int main() {
     }
     fclose(fHist);
 
-    // Ordenar todas las planillas creadas
     for (int i = 0; i < cantFechas; i++) {
         char nombreDia[64];
         sprintf(nombreDia, "comandas_%s.dat", fechas[i]);
