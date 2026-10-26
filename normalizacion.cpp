@@ -35,29 +35,6 @@ struct Comanda {
 
 const int K = 5;
 
-void enteroATexto(int num, char* buffer) {
-    if (num == 0) {
-        buffer[0] = '0';
-        buffer[1] = '\0';
-        return;
-    }
-
-    char temp[20];
-    int len = 0;
-
-    while (num > 0) {
-        int digito = num % 10;
-        temp[len] = (char)(digito + '0');
-        len++;
-        num /= 10;
-    }
-
-    for (int i = 0; i < len; i++) {
-        buffer[i] = temp[len - 1 - i];
-    }
-    buffer[len] = '\0';
-}
-
 void encriptar(const char* origen, char* destino) {
     int i = 0;
     while (origen[i] != '\0' && i < 19) {
@@ -164,7 +141,15 @@ int main() {
             mozos[cantMozos].totalComision = ch.comision;
 
             char clavePlana[20];
-            enteroATexto(cantMozos + 1, clavePlana);
+            int id = cantMozos + 1;
+            if (id < 10) {
+                clavePlana[0] = (char)(id + '0');
+                clavePlana[1] = '\0';
+            } else {
+                clavePlana[0] = (char)((id / 10) + '0');
+                clavePlana[1] = (char)((id % 10) + '0');
+                clavePlana[2] = '\0';
+            }
             encriptar(clavePlana, mozos[cantMozos].password);
 
             cantMozos++;
